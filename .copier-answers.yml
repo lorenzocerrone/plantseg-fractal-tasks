@@ -1,0 +1,10 @@
+# Do not edit - changes here will be overwritten by Copier
+_commit: v0.2.1
+_src_path: gh:fractal-analytics-platform/fractal-tasks-template
+author_email: lorenzo.cerrone@uzh.ch
+author_name: Lorenzo Cerrone
+package_name: plantseg_fractal_tasks
+project_name: plantseg-fractal-tasks
+project_short_description: '(Experimental) PlantSeg tasks for fractal '
+project_url: ''
+

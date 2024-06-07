@@ -1,0 +1,32 @@
+# Project metadata (see https://peps.python.org/pep-0621)
+[project]
+name = "plantseg-fractal-tasks"
+version = "0.0.1"
+description = "(Experimental) PlantSeg tasks for fractal "
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+authors = [
+    { name = "Lorenzo Cerrone", email = "lorenzo.cerrone@uzh.ch" },
+]
+
+# Required Python version and dependencies
+requires-python = ">=3.8"
+dependencies = ["fractal-tasks-core == 1.0.0a3", "scikit-image"]
+
+# Optional dependencies (e.g. for `pip install -e ".[dev]"`, see
+# https://peps.python.org/pep-0621/#dependencies-optional-dependencies)
+[project.optional-dependencies]
+dev = ["devtools", "pytest", "requests", "build", "jsonschema"]
+
+# Build options (see https://peps.python.org/pep-0517)
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["plantseg_fractal_tasks"]
+
+# Always include the __FRACTAL_MANIFEST__.json file in the package
+[tool.setuptools.package-data]
+"*" = ["__FRACTAL_MANIFEST__.json"]
