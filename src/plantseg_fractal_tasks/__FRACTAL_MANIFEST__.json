@@ -112,79 +112,157 @@
             "type": "string",
             "description": "The URL of the Zarr file."
           },
-          "unet_name": {
-            "title": "Unet Name",
-            "default": "generic_confocal",
-            "type": "string",
-            "description": "The name of the U-Net model to use."
-          },
-          "beta": {
-            "title": "Beta",
-            "default": 0.6,
-            "type": "number",
-            "description": "The beta parameter for the GASP algorithm."
-          },
-          "post_minsize": {
-            "title": "Post Minsize",
-            "default": 100,
+          "channel": {
+            "title": "Channel",
             "type": "integer",
-            "description": "The minimum size of the post-processed segments."
+            "description": "Missing description"
           },
-          "device": {
-            "default": "cuda",
-            "allOf": [
-              {
-                "$ref": "#/definitions/Device"
-              }
-            ],
-            "title": "Device",
-            "description": "The device to use for the U-Net model."
+          "preprocessing_model": {
+            "$ref": "#/definitions/PlantSegPreprocessingModel",
+            "title": "Preprocessing_Model",
+            "description": "Missing description"
           },
-          "ws_threshold": {
-            "title": "Ws Threshold",
-            "default": 0.5,
-            "type": "number",
-            "description": "The threshold for the watershed algorithm."
+          "prediction_model": {
+            "$ref": "#/definitions/PlantSegPredictionsModel",
+            "title": "Prediction_Model",
+            "description": "Missing description"
           },
-          "segmentation_type": {
-            "default": "gasp",
-            "allOf": [
-              {
-                "$ref": "#/definitions/SegmentationType"
-              }
-            ],
-            "title": "Segmentation_Type",
-            "description": "The type of segmentation to use."
-          },
-          "patch": {
-            "title": "Patch",
-            "default": [
-              80,
-              160,
-              160
-            ],
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "integer"
-              }
-            ],
-            "description": "The patch size to use for the U-Net model."
+          "segmentation_model": {
+            "$ref": "#/definitions/PlantSegSegmentationModel",
+            "title": "Segmentation_Model",
+            "description": "Missing description"
           }
         },
         "required": [
-          "zarr_url"
+          "zarr_url",
+          "channel",
+          "preprocessing_model",
+          "prediction_model",
+          "segmentation_model"
         ],
         "additionalProperties": false,
         "definitions": {
+          "PlantSegPreprocessingModel": {
+            "title": "PlantSegPreprocessingModel",
+            "description": "Define the optional preprocessing steps to apply to the raw image.",
+            "type": "object",
+            "properties": {
+              "rescaling_factor": {
+                "title": "Rescaling Factor",
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "sigma_gaussian_filter": {
+                "title": "Sigma Gaussian Filter",
+                "type": "number"
+              },
+              "manual_cropping": {
+                "title": "Manual Cropping",
+                "type": "string"
+              },
+              "skip": {
+                "title": "Skip",
+                "default": true,
+                "type": "boolean"
+              }
+            }
+          },
+          "ModelsPool": {
+            "title": "ModelsPool",
+            "description": "Select if the model is sourced from PlantSegZoo or BioImageIO.",
+            "enum": [
+              "PlantSegZoo",
+              "BioImageIO"
+            ],
+            "type": "string"
+          },
+          "DynamicallyGeneratedModel": {
+            "title": "DynamicallyGeneratedModel",
+            "description": "Select a model from the PlantSeg Zoo.",
+            "enum": [
+              "generic_confocal_3D_unet",
+              "generic_light_sheet_3D_unet",
+              "confocal_3D_unet_ovules_ds1x",
+              "confocal_3D_unet_ovules_ds2x",
+              "confocal_3D_unet_ovules_ds3x",
+              "confocal_2D_unet_ovules_ds2x",
+              "lightsheet_3D_unet_root_ds1x",
+              "lightsheet_3D_unet_root_ds2x",
+              "lightsheet_3D_unet_root_ds3x",
+              "lightsheet_2D_unet_root_ds1x",
+              "lightsheet_3D_unet_root_nuclei_ds1x",
+              "lightsheet_2D_unet_root_nuclei_ds1x",
+              "confocal_2D_unet_sa_meristem_cells",
+              "confocal_3D_unet_sa_meristem_cells",
+              "lightsheet_3D_unet_mouse_embryo_cells",
+              "confocal_3D_unet_mouse_embryo_nuclei",
+              "PlantSeg_3Dnuc_platinum"
+            ],
+            "type": "string"
+          },
+          "DynamicBioIOModels": {
+            "title": "DynamicBioIOModels",
+            "description": "Select a model from the BioImageIO Zoo.",
+            "enum": [
+              "affable-shark",
+              "ambitious-ant",
+              "ambitious-sloth",
+              "amiable-crocodile",
+              "chatty-frog",
+              "conscientious-seashell",
+              "courteous-otter",
+              "creative-panda",
+              "determined-chipmunk",
+              "discreet-rooster",
+              "easy-going-sauropod",
+              "efficient-chipmunk",
+              "emotional-cricket",
+              "fearless-crab",
+              "hiding-blowfish",
+              "hiding-tiger",
+              "humorous-owl",
+              "impartial-shark",
+              "impartial-shrimp",
+              "independent-shrimp",
+              "joyful-deer",
+              "kind-seashell",
+              "laid-back-lobster",
+              "loyal-parrot",
+              "loyal-squid",
+              "modest-octopus",
+              "naked-microbe",
+              "nice-peacock",
+              "noisy-fish",
+              "noisy-hedgehog",
+              "non-judgemental-eagle",
+              "organized-badger",
+              "organized-cricket",
+              "passionate-t-rex",
+              "pioneering-rhino",
+              "placid-llama",
+              "polite-pig",
+              "powerful-chipmunk",
+              "powerful-fish",
+              "shivering-raccoon",
+              "straightforward-crocodile",
+              "thoughtful-turtle",
+              "wild-whale",
+              "willing-hedgehog"
+            ],
+            "type": "string"
+          },
           "Device": {
             "title": "Device",
             "description": "An enumeration.",
@@ -194,15 +272,127 @@
             ],
             "type": "string"
           },
+          "PlantSegPredictionsModel": {
+            "title": "PlantSegPredictionsModel",
+            "description": "Input model for PlantSeg predictions.",
+            "type": "object",
+            "properties": {
+              "model_source": {
+                "default": "PlantSegZoo",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/ModelsPool"
+                  }
+                ],
+                "title": "Model_Source"
+              },
+              "plantsegzoo_name": {
+                "default": "generic_confocal_3D_unet",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/DynamicallyGeneratedModel"
+                  }
+                ],
+                "title": "Plantsegzoo_Name"
+              },
+              "bioimageio_name": {
+                "default": "affable-shark",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/DynamicBioIOModels"
+                  }
+                ],
+                "title": "Bioimageio_Name"
+              },
+              "device": {
+                "default": "cuda",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/Device"
+                  }
+                ],
+                "title": "Device"
+              },
+              "patch": {
+                "title": "Patch",
+                "default": [
+                  80,
+                  160,
+                  160
+                ],
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "save_results": {
+                "title": "Save Results",
+                "default": false,
+                "type": "boolean"
+              },
+              "skip": {
+                "title": "Skip",
+                "default": false,
+                "type": "boolean"
+              }
+            }
+          },
           "SegmentationType": {
             "title": "SegmentationType",
             "description": "An enumeration.",
             "enum": [
               "gasp",
               "mutex_ws",
-              "multicut"
+              "multicut",
+              "dt_watershed"
             ],
             "type": "string"
+          },
+          "PlantSegSegmentationModel": {
+            "title": "PlantSegSegmentationModel",
+            "description": "Input model for PlantSeg segmentations.",
+            "type": "object",
+            "properties": {
+              "ws_threshold": {
+                "title": "Ws Threshold",
+                "default": 0.5,
+                "type": "number"
+              },
+              "segmentation_type": {
+                "default": "gasp",
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/SegmentationType"
+                  }
+                ],
+                "title": "Segmentation_Type"
+              },
+              "beta": {
+                "title": "Beta",
+                "default": 0.6,
+                "type": "number"
+              },
+              "post_minsize": {
+                "title": "Post Minsize",
+                "default": 100,
+                "type": "integer"
+              },
+              "skip": {
+                "title": "Skip",
+                "default": false,
+                "type": "boolean"
+              }
+            }
           }
         }
       },
