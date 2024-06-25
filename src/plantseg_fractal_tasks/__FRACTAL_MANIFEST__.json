@@ -1,0 +1,214 @@
+{
+  "manifest_version": "2",
+  "task_list": [
+    {
+      "name": "Import from PlantSeg H5",
+      "executable_non_parallel": "import_from_plantseg_h5.py",
+      "meta_non_parallel": {
+        "cpus_per_task": 1,
+        "mem": 4000
+      },
+      "args_schema_non_parallel": {
+        "title": "ImportFromPlantsegH5",
+        "type": "object",
+        "properties": {
+          "zarr_urls": {
+            "title": "Zarr Urls",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of URLs to the OME-Zarr image."
+          },
+          "zarr_dir": {
+            "title": "Zarr Dir",
+            "type": "string",
+            "description": "Absolute path to the OME-Zarr image."
+          },
+          "h5_path": {
+            "title": "H5 Path",
+            "type": "string",
+            "description": "Can be the absolute path to the PlantSeg HDF5 file, a directory containing a bunch of h5 files, or a valid glob pattern."
+          },
+          "raw_key": {
+            "title": "Raw Key",
+            "default": "raw",
+            "type": "string",
+            "description": "Key of the raw image in the HDF5 file."
+          },
+          "label_key": {
+            "title": "Label Key",
+            "type": "string",
+            "description": "Key of the label image in the HDF5 file."
+          },
+          "voxel_size_model": {
+            "title": "Voxel Size Model",
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AxisModel"
+            },
+            "description": "List of VoxelsizeModel objects, containing the element size, axis name and unit."
+          },
+          "levels": {
+            "title": "Levels",
+            "default": 1,
+            "type": "integer",
+            "description": "Number of levels in the multiscale image."
+          }
+        },
+        "required": [
+          "zarr_urls",
+          "zarr_dir",
+          "h5_path"
+        ],
+        "additionalProperties": false,
+        "definitions": {
+          "AxisModel": {
+            "title": "AxisModel",
+            "description": "AxisModel is a Pydantic model for the voxel size of an image.",
+            "type": "object",
+            "properties": {
+              "axis_name": {
+                "title": "Axis Name",
+                "type": "string"
+              },
+              "element_size": {
+                "title": "Element Size",
+                "type": "number"
+              },
+              "unit": {
+                "title": "Unit",
+                "type": "string"
+              },
+              "scaling_factor": {
+                "title": "Scaling Factor",
+                "default": 1.0,
+                "type": "number"
+              }
+            },
+            "required": [
+              "axis_name",
+              "element_size",
+              "unit"
+            ]
+          }
+        }
+      },
+      "docs_info": "## import_from_plantseg_h5\nThis function imports a raw image and a label image from a PlantSeg HDF5 file\nto a OME-Zarr image.\n"
+    },
+    {
+      "name": "Run Plantseg predictions",
+      "executable_parallel": "plantseg_workflow.py",
+      "meta_parallel": {
+        "cpus_per_task": 1,
+        "mem": 4000
+      },
+      "args_schema_parallel": {
+        "title": "PlantsegWorkflow",
+        "type": "object",
+        "properties": {
+          "zarr_url": {
+            "title": "Zarr Url",
+            "type": "string",
+            "description": "The URL of the Zarr file."
+          },
+          "unet_name": {
+            "title": "Unet Name",
+            "default": "generic_confocal",
+            "type": "string",
+            "description": "The name of the U-Net model to use."
+          },
+          "beta": {
+            "title": "Beta",
+            "default": 0.6,
+            "type": "number",
+            "description": "The beta parameter for the GASP algorithm."
+          },
+          "post_minsize": {
+            "title": "Post Minsize",
+            "default": 100,
+            "type": "integer",
+            "description": "The minimum size of the post-processed segments."
+          },
+          "device": {
+            "default": "cuda",
+            "allOf": [
+              {
+                "$ref": "#/definitions/Device"
+              }
+            ],
+            "title": "Device",
+            "description": "The device to use for the U-Net model."
+          },
+          "ws_threshold": {
+            "title": "Ws Threshold",
+            "default": 0.5,
+            "type": "number",
+            "description": "The threshold for the watershed algorithm."
+          },
+          "segmentation_type": {
+            "default": "gasp",
+            "allOf": [
+              {
+                "$ref": "#/definitions/SegmentationType"
+              }
+            ],
+            "title": "Segmentation_Type",
+            "description": "The type of segmentation to use."
+          },
+          "patch": {
+            "title": "Patch",
+            "default": [
+              80,
+              160,
+              160
+            ],
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "description": "The patch size to use for the U-Net model."
+          }
+        },
+        "required": [
+          "zarr_url"
+        ],
+        "additionalProperties": false,
+        "definitions": {
+          "Device": {
+            "title": "Device",
+            "description": "An enumeration.",
+            "enum": [
+              "cpu",
+              "cuda"
+            ],
+            "type": "string"
+          },
+          "SegmentationType": {
+            "title": "SegmentationType",
+            "description": "An enumeration.",
+            "enum": [
+              "gasp",
+              "mutex_ws",
+              "multicut"
+            ],
+            "type": "string"
+          }
+        }
+      },
+      "docs_info": "## plantseg_workflow\nThis function imports a raw image and a label image from a PlantSeg HDF5 file\nto a OME-Zarr image.\n"
+    }
+  ],
+  "has_args_schemas": true,
+  "args_schema_version": "pydantic_v1"
+}

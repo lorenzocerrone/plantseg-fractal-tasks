@@ -28,7 +28,7 @@ def validate_command(cmd: str):
 
     # Valid stderr includes pydantic.error_wrappers.ValidationError (type
     # match between model and function, but tmp_file_args has wrong arguments)
-    assert "pydantic.error_wrappers.ValidationError" in stderr
+    assert "pydantic.v1.error_wrappers.ValidationError" in stderr
 
     # Valid stderr must include a mention of "unexpected keyword arguments",
     # because we are including some invalid arguments
@@ -55,9 +55,5 @@ def test_task_interface(task, tmp_path):
         if executable is None:
             continue
         task_path = (PACKAGE_DIR / executable).as_posix()
-        cmd = (
-            f"python {task_path} "
-            f"--args-json {tmp_file_args} "
-            f"--out-json {tmp_file_metadiff}"
-        )
+        cmd = f"python {task_path} " f"--args-json {tmp_file_args} " f"--out-json {tmp_file_metadiff}"
         validate_command(cmd)
