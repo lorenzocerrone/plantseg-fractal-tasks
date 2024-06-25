@@ -1,7 +1,7 @@
 # Project metadata (see https://peps.python.org/pep-0621)
 [project]
 name = "plantseg-fractal-tasks"
-version = "0.0.1"
+# version = "0.0.1"
 description = "(Experimental) PlantSeg tasks for fractal "
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
@@ -15,13 +15,14 @@ dependencies = ["fractal-tasks-core"]
 
 # Optional dependencies (e.g. for `pip install -e ".[dev]"`, see
 # https://peps.python.org/pep-0621/#dependencies-optional-dependencies)
+dynamic = ["version"]
 [project.optional-dependencies]
 dev = ["devtools", "pytest", "requests", "build", "jsonschema"]
 
 # Build options (see https://peps.python.org/pep-0517)
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -30,3 +31,6 @@ include = ["plantseg_fractal_tasks"]
 # Always include the __FRACTAL_MANIFEST__.json file in the package
 [tool.setuptools.package-data]
 "*" = ["__FRACTAL_MANIFEST__.json"]
+
+[tool.hatch.version]
+path = "src/plantseg_fractal_tasks/__version__.py"
